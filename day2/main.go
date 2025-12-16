@@ -28,6 +28,30 @@ func (Self SKU) Next() SKU {
 	}
 }
 
+func madeOfRepeats(str string, size int) bool {
+	strLength := len(str) 
+	if (strLength == size) {
+		return false;
+	}
+
+	if (strLength % size != 0) {
+		return madeOfRepeats(str, size + 1)
+	}
+
+	substring := str[0:size]
+	for current := size; current + size <= strLength; current += size {
+		if (str[current : current + size] != substring) {
+			return madeOfRepeats(str, size + 1)
+		}
+	} 
+
+	return true
+}
+
+func (Self SKU) MadeOfRepeats() bool {
+	return madeOfRepeats(Self.Symbol, 1)
+}
+
 func (Self SKU) IsRepeatTwice() bool {
 	length := len(Self.Symbol)
 	if (length % 2 != 0) {
@@ -91,15 +115,20 @@ func main() {
 		skuRanges[i] = SKURangeFromString(str)
 	}
 
-	total := 0
+	total_twos := 0
+	total_all := 0
 	for _, skuRange := range skuRanges {
 		fmt.Println("Range from ", skuRange.From.Value, " to ", skuRange.To.Value)
 		for sku := range skuRange.Items() {
 			if (sku.IsRepeatTwice()) {
-				total += sku.Value
+				total_twos += sku.Value
+			}
+			if (sku.MadeOfRepeats()) {
+				total_all += sku.Value
 			}
 		}
 	}
 
-	fmt.Println("Total: ", total)
+	fmt.Println("Total twos: ", total_twos)
+	fmt.Println("Total all: ", total_all)
 }
