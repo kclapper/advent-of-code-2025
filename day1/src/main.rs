@@ -106,8 +106,6 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
-    use std::mem::take;
-
     use super::*;
 
     #[test]
