@@ -61,6 +61,10 @@ impl FreshRange {
             max(self.1, other.1)
         )
     }
+
+    fn range_len(&self) -> u64 {
+        self.1 - self.0 + 1
+    }
 }
 
 impl FromIterator<u64> for FreshRange {
@@ -149,8 +153,12 @@ fn main() {
     let fresh_items = items.iter().filter(|item| {
         is_fresh(&ranges[..], **item)
     });
+    let num_fresh_ids = ranges.iter().fold(0 as u64, |acc, range| {
+        acc + range.range_len()
+    });
 
     print!("Fresh item count: {}\n", fresh_items.count());
+    print!("Total fresh item IDs: {}\n", num_fresh_ids);
 }
 
 #[cfg(test)]
@@ -331,6 +339,19 @@ mod tests {
         assert_eq!(
             FreshRange(3, 4).merge(&FreshRange(2, 3)),
             FreshRange(2, 4)
+        );
+    }
+
+    #[test]
+    fn range_len() {
+        assert_eq!(
+            FreshRange(1, 10).range_len(),
+            10
+        );
+
+        assert_eq!(
+            FreshRange(1000, 1010).range_len(),
+            11
         );
     }
 }
